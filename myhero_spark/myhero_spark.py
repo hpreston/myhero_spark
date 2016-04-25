@@ -57,7 +57,8 @@ def process_webhook():
     # Check what room this came from
     # If Demo Room process for open room
     if post_data["data"]["roomId"] == demo_room_id:
-        print("Incoming Demo Room Message.")
+        # print("Incoming Demo Room Message.")
+        sys.stderr.write("Incoming Demo Room Message\n")
         process_demoroom_message(post_data)
         # message_id = post_data["data"]["id"]
         # message = get_message(message_id)
@@ -85,7 +86,8 @@ def process_webhook():
         #     send_message_to_room(demo_room_id, reply)
     # If not the demo room, assume its a user voting session
     else:
-        print("Incoming Individual Message.")
+        # print("Incoming Individual Message.")
+        sys.stderr.write("Incoming Individual Message\n")
         process_incoming_message(post_data)
 
     return ""
@@ -124,6 +126,11 @@ def process_demoroom_message(post_data):
     message_id = post_data["data"]["id"]
     message = get_message(message_id)
     # pprint(message)
+
+    # First make sure not processing a message from the bot
+    if message["personEmail"] == bot_email:
+        return ""
+
 
     # Check if message contains word "results" and if so send results
     if message["text"].lower().find("results") > -1:
