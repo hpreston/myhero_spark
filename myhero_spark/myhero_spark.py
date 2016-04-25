@@ -47,9 +47,9 @@ app_headers["Content-type"] = "application/json"
 @app.route('/', methods=["POST"])
 def process_webhook():
     # Verify that the request is propery authorized
-    authz = valid_request_check(request)
-    if not authz[0]:
-        return authz[1]
+    # authz = valid_request_check(request)
+    # if not authz[0]:
+    #     return authz[1]
 
     post_data = request.get_json(force=True)
     # pprint(post_data)
