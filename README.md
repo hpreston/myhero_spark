@@ -15,7 +15,7 @@ Other services are:
 * Data - [hpreston/myhero_data](https://github.com/hpreston/myhero_data)
 * App - [hpreston/myhero_app](https://github.com/hpreston/myhero_app)
 * Web - [hpreston/myhero_web](https://github.com/hpreston/myhero_web)
-* Spark Bot = [hpreston/myhero_spark](https://github.com/hpreston/myhero_spark)
+* Spark Bot - [hpreston/myhero_spark](https://github.com/hpreston/myhero_spark)
 
 The docker containers are available at
 * Data - [hpreston/myhero_data](https://hub.docker.com/r/hpreston/myhero_data)
