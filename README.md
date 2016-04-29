@@ -1,6 +1,3 @@
-# IN DEVELOPMENT
-This service is currently in development and not ready for wide spread use.
-
 # MyHero Spark Bot
 
 This is the a Spark Bot for a basic microservice demo application.
@@ -22,6 +19,20 @@ The docker containers are available at
 * App - [hpreston/myhero_app](https://hub.docker.com/r/hpreston/myhero_app)
 * Web - [hpreston/myhero_web](https://hub.docker.com/r/hpreston/myhero_web)
 * Spark Bot - [hpreston/myhero_spark](https://hub.docker.com/r/hpreston/myhero_spark)
+
+# Spark Developer Account Requirement
+In order to use this service, you will need a Cisco Spark Account to use for the bot.  You can leverage your personal Spark Account or create a new one to be used by the service.  I recommend creating a new one to make testing easier (i.e. if you use your own it will be hard to chat with yourself).
+
+Creating an account is free and only requires a working email account (each Spark Account needs a unique email address).  Visit [http://www.ciscospark.com](http://www.ciscospark.com) to signup for an account.
+
+Developer access to Spark is also free and information is available at [http://developer.ciscospark.com](http://developer.ciscospark.com).
+
+In order to access the APIs of Spark, this bot needs the Developer Token for your account.  To find it:
+
+* Go to [http://developer.ciscospark.com](http://developer.ciscospark.com) and login with the credentials for your account.
+* In the upper right corner click on your picture and click `Copy` to copy your Access Token to your clipboard
+* Make a note of this someplace for when you need it later in the setup
+  * **If you save this in a file, such as in the `Vagrantfile` you create later, be sure not to commit this file.  Otherwise your credentials will be availabe to anyone who might look at your code later on GitHub.**
 
 ## Basic Application Details
 
@@ -79,6 +90,26 @@ Other users can be added to the room in one of the following ways.
 * By sending a message to the room
   * `Add email user@server.com`
 
+## Interacting with the Spark Bot
+The Spark Bot is a very simple interface that is designed to make it intuitive to use.  Once in the room, simply say "hello", "help" (or anything else) to have the bot reply back with some instructions on how to access the features.
+
+The bot is deisgned to look for key words to act on, and provide the basic help message for anything else.  The key words are:
+
+* options
+  * return a list of the current available options to vote on
+* results
+  * list the current status of voting results
+* vote
+  * send a private message to the sender to start a voting session
+  * in the private room typing the name of one of the options will register a vote and end the session
+
+An additional keyword of "add email" is also looked for.  This will have the bot add new users to the room.  Examples are:
+* `add email joe@domain.intra`
+  * add single user to the room
+* `add emails joe@domain.intra, jane@domain.intra, bob@domain.intra`
+  * add each of the three listed emails to the room
+
+
 ## REST APIs
 
 The main service API is at the root of the applciation and is what is used for the Spark Webhooks.
@@ -91,15 +122,21 @@ There is an API available to view and add users to the Room.
 
 # Local Development with Vagrant
 
-THIS ISN'T WORKING YET.  NEED TO FIGURE OUT HOW TO EASILY PASS IN SPARK EMAIL AND TOKEN
-
 I've included the configuration files needed to do local development with Vagrant in the repo.  Vagrant will still use Docker for local development and is configured to spin up a CentOS7 host VM for running the container.
+
+Before running `vagrant up` you will need to finish the Vagrant file configuration by adding the Spark Account Email and Token to the environment variables used by the container.  To do this:
+
+* Make a copy of Vagrantfile.sample to use
+  * `cp Vagrantfile.sample Vagrantfile`
+* Edit `Vagrantfile` and add your details where indicated
+  * `vim Vagrantfile`
+  * Change the value for `myherospark_bot_email` and `spark_token` in the `docker.env` hash
 
 To start local development run:
 * `vagrant up`
   - You may need to run this twice.  The first time to start the docker host, and the second to start the container.
 * Now you can interact with the API or interface at localhost:15001 (configured in Vagrantfile and Vagrantfile.host)
-  - example:  from your local machine `curl -H "key: DevApp" http://localhost:15001/options`
+  - example:  from your local machine `curl -H "key: DevBot" http://localhost:15003/demoroom/members`
   - Environment Variables are configured in Vagrantfile for development
 
 Each of the services in the application (i.e. myhero_web, myhero_app, and myhero_data) include Vagrant support to allow working locally on all three simultaneously.
