@@ -38,6 +38,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       "myhero_app_server" => "http://192.168.40.1:15001",
       "myhero_spark_bot_url" => "http://192.168.40.14:15003",
       "myhero_spark_bot_secret" => "DevBot",
+      "myhero_spark_bot_email" => "<ENTER EMAIL ADDRESS FOR SPARK ACCOUNT>",
+      "spark_token" => "<ENTER SPARK DEVELOPER TOKEN>"
     }
 
     # Specify a friendly name for the Docker container
