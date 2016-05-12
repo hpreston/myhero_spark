@@ -12,13 +12,24 @@ Other services are:
 * Data - [hpreston/myhero_data](https://github.com/hpreston/myhero_data)
 * App - [hpreston/myhero_app](https://github.com/hpreston/myhero_app)
 * Web - [hpreston/myhero_web](https://github.com/hpreston/myhero_web)
+* Ernst - [hpreston/myhero_ernst](https://github.com/hpreston/myhero_ernst)
+  * Optional Service used along with an MQTT server when App is in "queue" mode
 * Spark Bot - [hpreston/myhero_spark](https://github.com/hpreston/myhero_spark)
+  * Optional Service that allows voting through IM/Chat with a Cisco Spark Bot
+* Tropo App - [hpreston/myhero_tropo](https://github.com/hpreston/myhero_tropo)
+  * Optional Service that allows voting through TXT/SMS messaging
+
 
 The docker containers are available at
 * Data - [hpreston/myhero_data](https://hub.docker.com/r/hpreston/myhero_data)
 * App - [hpreston/myhero_app](https://hub.docker.com/r/hpreston/myhero_app)
 * Web - [hpreston/myhero_web](https://hub.docker.com/r/hpreston/myhero_web)
+* Ernst - [hpreston/myhero_ernst](https://hub.docker.com/r/hpreston/myhero_ernst)
+  * Optional Service used along with an MQTT server when App is in "queue" mode
 * Spark Bot - [hpreston/myhero_spark](https://hub.docker.com/r/hpreston/myhero_spark)
+  * Optional Service that allows voting through IM/Chat with a Cisco Spark Bot
+* Tropo App - [hpreston/myhero_tropo](https://hub.docker.com/r/hpreston/myhero_tropo)
+  * Optional Service that allows voting through TXT/SMS messaging
 
 # Spark Developer Account Requirement
 In order to use this service, you will need a Cisco Spark Account to use for the bot.  You can leverage your personal Spark Account or create a new one to be used by the service.  I recommend creating a new one to make testing easier (i.e. if you use your own it will be hard to chat with yourself).
