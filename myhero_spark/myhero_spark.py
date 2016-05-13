@@ -103,7 +103,7 @@ def process_demoroom_members():
     if request.method == "PUT":
         data = request.get_json(force=True)
         try:
-            print("Adding %s to demo room." % (data["email"]))
+            sys.stderr.write("Adding %s to demo room.\n" % (data["email"]))
             add_email_demo_room(data["email"], demo_room_id)
             status = 201
         except KeyError:
@@ -152,7 +152,7 @@ def process_demoroom_message(post_data):
     elif message["text"].lower().find("add email") > -1:
         # Get the email that comes
         emails = re.findall(r'[\w\.-]+@[\w\.-]+', message["text"])
-        pprint(emails)
+        # pprint(emails)
         reply = "Adding users to demo room.\n"
         for email in emails:
             add_email_demo_room(email, demo_room_id)
@@ -213,7 +213,7 @@ def process_incoming_message(post_data):
     chosen_hero = ""
     for option in options:
         if message["text"].lower().find(option.lower()) > -1:
-            pprint("Found a vote for: " + option)
+            sys.stderr.write("Found a vote for: " + option + "\n")
             chosen_hero = option
             break
 
@@ -367,7 +367,7 @@ def setup_webhook(room_id, target, name):
         webhook = update_webhook(webhook_id, target, name)
 
     # pprint(webhook)
-    pprint("New WebHook Target URL: " + webhook["targetUrl"])
+    sys.stderr.write("New WebHook Target URL: " + webhook["targetUrl"] + "\n")
 
     return webhook_id
 
@@ -398,13 +398,13 @@ def valid_request_check(request):
             return (True, "")
         else:
             error = {"Error": "Invalid Key Provided."}
-            print error
+            sys.stderr.write(error + "\n")
             status = 401
             resp = Response(json.dumps(error), content_type='application/json', status=status)
             return (False, resp)
     except KeyError:
         error = {"Error": "Method requires authorization key."}
-        print error
+        sys.stderr.write(error + "\n")
         status = 400
         resp = Response(json.dumps(error), content_type='application/json', status=status)
         return (False, resp)
@@ -497,7 +497,8 @@ if __name__ == '__main__':
             # print "Input Spark Token: " + str(get_spark_token)
             spark_token = get_spark_token
     # print "Spark Token: " + spark_token
-    sys.stderr.write("Spark Token: " + spark_token + "\n")
+    # sys.stderr.write("Spark Token: " + spark_token + "\n")
+    sys.stderr.write("Spark Token: REDACTED\n")
 
     secret_key = args.secret
     if (secret_key == None):
@@ -515,11 +516,11 @@ if __name__ == '__main__':
 
     # Setup The MyHereo Spark Demo Room
     demo_room_id = setup_demo_room()
-    pprint("MyHero Demo Room ID: " + demo_room_id)
+    sys.stderr.write("MyHero Demo Room ID: " + demo_room_id + "\n")
 
     # Setup Web Hook to process demo room messages
     webhook_id = setup_webhook(demo_room_id, bot_url, "MyHero Demo Room Webhook")
-    pprint("MyHero Demo Web Hook ID: " + webhook_id)
+    sys.stderr.write("MyHero Demo Web Hook ID: " + webhook_id + "\n")
 
 
     # If Demo Email was provided, add to room
