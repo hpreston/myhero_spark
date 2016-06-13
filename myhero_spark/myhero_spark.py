@@ -120,6 +120,30 @@ def process_demoroom_members():
 
     return resp
 
+@app.route("/demoroom/members/<email>", methods=["GET"])
+def easy_add_member(email):
+    '''
+    Quick and dirty method to add user to Spark Room
+    '''
+
+    if request.method == "GET":
+        try:
+            sys.stderr.write("Adding %s to demo room.\n" % (email))
+            add_email_demo_room(email, demo_room_id)
+            status = 201
+        except:
+            error = {"Error": "There was an error adding the email."}
+            status = 400
+            resp = Response(json.dumps(error), content_type='application/json', status=status)
+            return resp
+
+    demo_room_members = get_membership_for_room(demo_room_id)
+    resp = Response(
+        json.dumps(demo_room_members, sort_keys=True, indent=4, separators=(',', ': ')),
+        content_type='application/json',
+        status=status)
+    return resp
+
 
 # Bot functions to process the incoming messages posted by Cisco Spark
 def process_demoroom_message(post_data):
