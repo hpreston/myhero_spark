@@ -428,7 +428,7 @@ def valid_request_check(request):
             return (False, resp)
     except KeyError:
         error = {"Error": "Method requires authorization key."}
-        sys.stderr.write(error + "\n")
+        sys.stderr.write(str(error) + "\n")
         status = 400
         resp = Response(json.dumps(error), content_type='application/json', status=status)
         return (False, resp)
