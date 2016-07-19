@@ -1,3 +1,4 @@
 .idea/
 .vagrant
 Vagrantfile
+drone-secrets.yml
