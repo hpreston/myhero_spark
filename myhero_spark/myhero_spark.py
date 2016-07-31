@@ -106,14 +106,14 @@ def send_help(post_data):
     message = "Thanks for your interest in voting for your favorite SuperHero.  \n"
     message = message + "I understand the following commands:  \n"
     for c in commands.items():
-        message = message + "    %s: %s \n" % (c[0], c[1])
+        message = message + "* **%s**: %s \n" % (c[0], c[1])
     return message
 
 def send_options(post_data):
     options = get_options()
     message = "The options are... \n"
     for option in options:
-        message += "  - %s \n" % (option)
+        message += "* %s \n" % (option)
     return message
 
 def debug_msg(post_data, message):
@@ -137,9 +137,9 @@ def process_vote(post_data):
     if chosen_hero != "":
         vote = place_vote(chosen_hero)
         # 4.  Thank the user for their vote
-        reply = "Thanks for your vote for %s.  Every vote is important.  You can check current results by typing /results." % (chosen_hero)
+        reply = "Thanks for your vote for **%s**.  Every vote is important.  You can check current results by typing _/results_." % (chosen_hero)
     else:
-        reply = "I didn't understand your vote, please type the name of your chosen hero exactly as listed on the ballot.  "
+        reply = "I didn't understand your vote, please type the name of your chosen hero **exactly** as listed on the ballot.  "
     return reply
 
 # Utilities to interact with the MyHero-App Server
