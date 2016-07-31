@@ -10,6 +10,10 @@ publish:
     username: $$DOCKER_USERNAME
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
+    load: /drone/.docker/cake.tar
+    save:
+      destination: /drone/.docker/cake.tar
+      tag: $${BRANCH##feature/}
 
   docker:
     repo: $$DOCKER_USERNAME/$$DOCKER_REPO
@@ -17,6 +21,10 @@ publish:
     username: $$DOCKER_USERNAME
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
+    load: /drone/.docker/cake.tar
+    save:
+      destination: /drone/.docker/cake.tar
+      tag: latest
     when:
       branch: "master"
 
@@ -38,3 +46,8 @@ notify:
     image: hpreston/drone-spark
     roomId: $$SPARK_ROOM
     auth_token: $$SPARK_TOKEN
+
+cache:
+    mount:
+        - /drone/.docker/cake.tar
+
