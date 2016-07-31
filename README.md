@@ -9,6 +9,7 @@ Details on deploying the entire demo to a Mantl cluster can be found at
 The application was designed to provide a simple demo for Cisco Mantl.  It is written as a simple Python Flask application and deployed as a docker container.
 
 Other services are:
+
 * Data - [hpreston/myhero_data](https://github.com/hpreston/myhero_data)
 * App - [hpreston/myhero_app](https://github.com/hpreston/myhero_app)
 * Web - [hpreston/myhero_web](https://github.com/hpreston/myhero_web)
@@ -21,6 +22,7 @@ Other services are:
 
 
 The docker containers are available at
+
 * Data - [hpreston/myhero_data](https://hub.docker.com/r/hpreston/myhero_data)
 * App - [hpreston/myhero_app](https://hub.docker.com/r/hpreston/myhero_app)
 * Web - [hpreston/myhero_web](https://hub.docker.com/r/hpreston/myhero_web)
@@ -60,6 +62,7 @@ Required
 # Basic Usage
 
 In order to run, the service needs several pieces of information to be provided:
+
 * App Server Address
 * App Server Authentication Key to Use
 * Spark Bot Authentication Key to Require in API Calls
@@ -69,67 +72,66 @@ In order to run, the service needs several pieces of information to be provided:
   * Spark Account Token
 
 These details can be provided in one of three ways.
+
 * As a command line argument
-  - `python myhero_spark/myhero_spark.py --app "http://myhero-app.server.com" --appkey "APP AUTH KEY" --secret "BOT AUTH KEY"
-  --boturl "http://myhero-spark.server.com" --botemail "myhero.demo@server.com" --token "HAAKJ1231KFSDFKJSDF1232132"`
+
+	```
+	python myhero_spark/myhero_spark.py \
+	  --app "http://myhero-app.server.com" \
+	  --appkey "APP AUTH KEY" \
+	  --secret "BOT AUTH KEY" \
+	  --boturl "http://myhero-spark.server.com" \
+	  --botemail "myhero.demo@server.com" \
+	  --token "HAAKJ1231KFSDFKJSDF1232132"
+	```
+  
 * As environment variables
-  - `export myhero_app_server=http://myhero-app.server.com`
-  - `export myhero_app_key=APP AUTH KEY`
-  - `export myhero_spark_bot_email=myhero.demo@server.com`
-  - `export spark_token=HAAKJ1231KFSDFKJSDF1232132`
-  - `export myhero_spark_bot_url=http://myhero-spark.server.com`
-  - `export myhero_spark_bot_secret="BOT AUTH KEY"`
-  - `python myhero_spark/myhero_spark.py`
+
+	```
+	export myhero_app_server=http://myhero-app.server.com`
+	export myhero_app_key=APP AUTH KEY`
+	export myhero_spark_bot_email=myhero.demo@server.com`
+	export spark_token=HAAKJ1231KFSDFKJSDF1232132`
+	export myhero_spark_bot_url=http://myhero-spark.server.com`
+	export myhero_spark_bot_secret="BOT AUTH KEY"`
+	python myhero_spark/myhero_spark.py`
+	```
 
 * As raw input when the application is run
-  - `python myhero_app/myhero_app.py`
-  - `What is the app server address? http://myhero-app.server.com`
-  - `App Server Key: APP AUTH KEY`
-  - etc
+
+	```
+	python myhero_app/myhero_app.py`
+	What is the app server address? http://myhero-app.server.com`
+	App Server Key: APP AUTH KEY`
+	 .
+	 .
+	
+	```
 
 A command line argument overrides an environment variable, and raw input is only used if neither of the other two options provide needed details.
 
 # Accessing
 
-Upon startup, the service should create a new Spark Room called "MyHero Demo" if one doesn't already exist for the given Spark User.  It also registers a webhook with the room to send all new messages to the service address.
+Upon startup, the service registers a webhook to send all new messages to the service address.
 
-Other users can be added to the room in one of the following ways.
-* As a command line argument at startup
-  * `python myhero_spark/myhero_spark.py --demoemail user@server.com`
-* Making a REST API call
-  * `curl -X PUT -H "key: BOT AUTH KEY" http://localhost:5000/demoroom/members -d '{"email":"user@server.com"}'`
-* By sending a message to the room
-  * `Add email user@server.com`
 
 ## Interacting with the Spark Bot
-The Spark Bot is a very simple interface that is designed to make it intuitive to use.  Once in the room, simply say "hello", "help" (or anything else) to have the bot reply back with some instructions on how to access the features.
+The Spark Bot is a very simple interface that is designed to make it intuitive to use.  Simply send any message to the Spark Bot Email Address to have the bot reply back with some instructions on how to access the features.
 
-The bot is deisgned to look for key words to act on, and provide the basic help message for anything else.  The key words are:
+The bot is deisgned to look for commands to act on, and provide the basic help message for anything else.  The commands are:
 
-* options
+* /options
   * return a list of the current available options to vote on
-* results
+* /results
   * list the current status of voting results
-* vote
-  * send a private message to the sender to start a voting session
-  * in the private room typing the name of one of the options will register a vote and end the session
-
-An additional keyword of "add email" is also looked for.  This will have the bot add new users to the room.  Examples are:
-* `add email joe@domain.intra`
-  * add single user to the room
-* `add emails joe@domain.intra, jane@domain.intra, bob@domain.intra`
-  * add each of the three listed emails to the room
-
+* /vote {{ option }} 
+  * Place a vote for the 'option'
+* /help 
+  * Provide a help message
 
 ## REST APIs
 
 The main service API is at the root of the applciation and is what is used for the Spark Webhooks.
-
-There is an API available to view and add users to the Room.
-* View list of users in the room
-  * `curl -X GET -H "key: BOT AUTH KEY" http://localhost:5000/demoroom/members`
-* Add a user to the room
-  * `curl -X PUT -H "key: BOT AUTH KEY" http://localhost:5000/demoroom/members -d '{"email":"user@server.com"}'`
 
 # Local Development with Vagrant
 
