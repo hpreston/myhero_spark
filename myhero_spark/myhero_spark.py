@@ -92,13 +92,15 @@ def process_incoming_message(post_data):
 
 def send_results(post_data):
     results = v2_get_results()
+    sys.stderr.write(results + "\n")
     # ToDo - update results message to provide standings
     message = "The current standings are\n"
     for i, result in enumerate(results):
         if i == 0:
-            message += " **%s** is in the lead with %s\% of the votes!\n " % (result[0], result[2])
+            message += " **" +result[0] + "** is in the lead with " + result[2] + "% of the votes!\n "
         else:
-            message += "  - %s has %s% of the votes.\n" % (result[0], result[2])
+            # message += "  - %s has %s% of the votes.\n" % (result[0], result[2])
+            pass
     return message
 
 def send_help(post_data):
