@@ -240,10 +240,10 @@ def process_incoming_message(post_data):
 
     command = ""
     for c in commands.items():
-        if message["text"].find(command[0]) == 0:
+        if message["text"].find(c[0]) == 0:
             command = c
-            sys.stderr.write("Found command: " + command[0])
-            debug_msg(post_data, "Found command: " + command[0])
+            sys.stderr.write("Found command: " + c[0])
+            debug_msg(post_data, "Found command: " + c[0])
 
 def debug_msg(post_data, message):
     send_message_to_email(get_message(post_data["data"]["id"])["roomId"], message)
