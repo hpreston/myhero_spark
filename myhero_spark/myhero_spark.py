@@ -91,11 +91,14 @@ def process_incoming_message(post_data):
     send_message_to_room(room_id, reply)
 
 def send_results(post_data):
-    results = get_results()
+    results = v2_get_results()
     # ToDo - update results message to provide standings
     message = "The current standings are\n"
-    for result in results:
-        message += "  - %s has %s votes.\n" % (result[0], result[1])
+    for i, result in enumerate(results):
+        if i == 0:
+            message += " **%s** is in the leade with %s% of the votes!\n " % (result[0], result[2])
+        else:
+            message += "  - %s has %s% of the votes.\n" % (result[0], result[2])
     return message
 
 def send_help(post_data):
@@ -146,6 +149,13 @@ def get_results():
     tally = page.json()
     tally = sorted(tally.items(), key = lambda (k,v): v, reverse=True)
     return tally
+
+def v2_get_results():
+    u = app_server + "/v2/results"
+    page = requests.get(u, headers = app_headers)
+    tally = page.json()
+    return tally
+
 
 def get_options():
     u = app_server + "/options"
