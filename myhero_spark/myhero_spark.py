@@ -97,9 +97,9 @@ def send_results(post_data):
     message = "The current standings are\n"
     for i, result in enumerate(results):
         if i == 0:
-            message += " **" +result[0] + "** is in the lead with " + result[2] + "% of the votes!\n "
+            message += " **" +result[0] + "** is in the lead with " + str(result)[2] + "% of the votes!\n "
         else:
-            # message += "  - %s has %s% of the votes.\n" % (result[0], result[2])
+            message += "  - %s has %s% of the votes.\n" % (result[0], str(result[2]))
             pass
     return message
 
