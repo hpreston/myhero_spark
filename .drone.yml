@@ -1,7 +1,7 @@
 build:
   image: python:2
   commands:
-    - curl https://api.ciscospark.com/v1/messages -X POST -H "Authorization:Bearer $$SPARK_TOKEN" --data "roomId=$$SPARK_ROOM" --data "text=Repo $CI_REPO - Drone kicking off build $CI_BUILD_NUMBER"
+    - echo "Buliding..."
 
 publish:
   docker:
@@ -10,6 +10,15 @@ publish:
     username: $$DOCKER_USERNAME
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
+
+  docker:
+    repo: $$DOCKER_USERNAME/$$DOCKER_REPO
+    tag: "latest"
+    username: $$DOCKER_USERNAME
+    password: $$DOCKER_PASSWORD
+    email: $$DOCKER_EMAIL
+    when:
+      branch: "master"
 
 deploy:
   webhook:
@@ -21,28 +30,11 @@ deploy:
       password: $$MANTL_PASSWORD
     urls:
       - https://$$MANTL_CONTROL/marathon/v2/apps/$$BRANCH/$$MANTL_APP_NAME/restart?force=true
+    when:
+      branch: "!master"
 
 notify:
-  webhook:
-    debug: true
-    image: plugins/drone-webhook
-    when:
-      success: true
-      failure: true
-    method: POST
-    header:
-      Content-type: application/json; charset=utf-8
-      Authorization: Bearer $$SPARK_TOKEN
-    urls:
-      - https://api.ciscospark.com/v1/messages
-    template: |
-      {
-        "roomId": "$$SPARK_ROOM",
-        {{#success build.status}}
-        "text": "Repo {{repo.full_name}} - Drone confirms {{repo.full_name}} build {{build.number}} completed successfully.\nhttp://github.com/{{repo.full_name}}/commit/{{build.commit}}.\nhttp://$$DRONE_SERVER/{{repo.full_name}}/{{build.number}}."
-        {{else}}
-        "text": "Repo {{repo.full_name}} - Drone blames {{build.author}} for breaking build {{build.number}}.\nhttp://github.com/{{repo.full_name}}/commit/{{build.commit}}.\nhttp://$$DRONE_SERVER/{{repo.full_name}}/{{build.number}}."
-        {{/success}}
-      }
-
-
+  spark:
+    image: hpreston/drone-spark
+    roomId: $$SPARK_ROOM
+    auth_token: $$SPARK_TOKEN

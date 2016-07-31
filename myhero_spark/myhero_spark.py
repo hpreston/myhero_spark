@@ -44,6 +44,13 @@ spark_headers["Content-type"] = "application/json"
 app_headers = {}
 app_headers["Content-type"] = "application/json"
 
+commands = {
+    "/vote": "Place a vote",
+    "/options": "Return options",
+    "/results": "Get results",
+    "/help": "Get help"
+}
+
 @app.route('/', methods=["POST"])
 def process_webhook():
     # Verify that the request is propery authorized
@@ -226,6 +233,21 @@ def process_incoming_message(post_data):
     if message["personEmail"] == bot_email:
         return ""
 
+    # Check for command
+    #  to be function
+
+    command = ""
+    for c in commands.items():
+        if message["text"].find(command[0]) == 0:
+            command = c
+            sys.stderr.write("Found command: " + command[0])
+            debug_msg(post_data, "Found command: " + command[0])
+
+def debug_msg(post_data, message):
+    send_message_to_email(get_message(post_data["data"]["id"])["roomId"], message)
+
+
+def process_vote(message):
     # What to do...
     # 1.  Get Possible Options
     # 2.  See if the message contains one of the options
@@ -244,8 +266,8 @@ def process_incoming_message(post_data):
     # Cast Vote
     if chosen_hero != "":
         vote = place_vote(chosen_hero)
-        delete_webhook(webhook_id)
-        msg = "Thanks for your vote for %s.  Your vote has been recorded and this ends this voting session." % (chosen_hero)
+        # delete_webhook(webhook_id)
+        msg = "Thanks for your vote for %s.  Every vote is important.  You can check current results by typing /results." % (chosen_hero)
         send_message_to_email(message["personEmail"], msg)
     else:
         msg = "I didn't understand your vote, please type the name of your chosen hero exactly as listed on the ballot.  "
@@ -349,9 +371,14 @@ def create_webhook(roomId, target, webhook_name = "New Webhook"):
         "name" : webhook_name,
         "targetUrl" : target,
         "resource" : "messages",
-        "event" : "created",
-        "filter" : "roomId=" + roomId
+        "event" : "created"
     }
+
+    if (roomId != ""):
+        {
+            spark_body["filter"]: "roomId=" + roomId
+        }
+
     page = requests.post(spark_u, headers = spark_headers, json=spark_body)
     webhook = page.json()
     return webhook
@@ -372,15 +399,24 @@ def delete_webhook(webhook_id):
 
 def setup_webhook(room_id, target, name):
     webhooks = current_webhooks()
+    webhook_id = ""
     # pprint(webhooks)
 
-    # Look for a Web Hook for the Room
-    webhook_id = ""
-    for webhook in webhooks:
-        if webhook["filter"] == "roomId=" + room_id:
-            # print("Found Webhook")
-            webhook_id = webhook["id"]
-            break
+    # Legacy test for room based demo
+    if (room_id != ""):
+        # Look for a Web Hook for the Room
+        for webhook in webhooks:
+            if webhook["filter"] == "roomId=" + room_id:
+                # print("Found Webhook")
+                webhook_id = webhook["id"]
+                break
+    # For Global Webhook
+    else:
+        for webhook in webhooks:
+            if webhook["name"] == name:
+                # print("Found Webhook")
+                webhook_id = webhook["id"]
+                break
 
     # If Web Hook not found, create it
     if webhook_id == "":
@@ -391,7 +427,6 @@ def setup_webhook(room_id, target, name):
         webhook = update_webhook(webhook_id, target, name)
 
     # pprint(webhook)
-    sys.stderr.write("New WebHook Target URL: " + webhook["targetUrl"] + "\n")
 
     return webhook_id
 
@@ -546,6 +581,9 @@ if __name__ == '__main__':
     webhook_id = setup_webhook(demo_room_id, bot_url, "MyHero Demo Room Webhook")
     sys.stderr.write("MyHero Demo Web Hook ID: " + webhook_id + "\n")
 
+    # Create Web Hook to recieve ALL messages
+    global_webhook_id = setup_webhook("", bot_url, "Global MyHero Demo Webhook")
+    sys.stderr.write("Global MyHero Web Hook ID: " + global_webhook_id + "\n")
 
     # If Demo Email was provided, add to room
     demo_email = args.demoemail
