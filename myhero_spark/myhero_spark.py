@@ -244,10 +244,23 @@ def process_incoming_message(post_data):
             command = c
             sys.stderr.write("Found command: " + c[0] + "\n")
             debug_msg(post_data, "Found command: " + c[0])
+            break
+
+    # Take action based on command
+    # If no command found, send help
+    if command in ["","/help"]:
+        send_help(post_data)
+
+def send_help(post_data):
+    message = "Thanks for your interest in voting for your favorite SuperHero.  \n"
+    message = message + "I understand the following commands:  \n"
+    for c in commands.items():
+        message = message + "    %s: %s \n" % (c[0], c[1])
+
+    send_message_to_room(get_message(post_data["data"]["id"])["roomId"], message)
 
 def debug_msg(post_data, message):
     send_message_to_room(get_message(post_data["data"]["id"])["roomId"], message)
-
 
 def process_vote(message):
     # What to do...
