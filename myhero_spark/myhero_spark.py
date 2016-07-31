@@ -241,7 +241,7 @@ def process_incoming_message(post_data):
     command = ""
     for c in commands.items():
         if message["text"].find(c[0]) == 0:
-            command = c
+            command = c[0]
             sys.stderr.write("Found command: " + c[0] + "\n")
             debug_msg(post_data, "Found command: " + c[0])
             break
@@ -249,15 +249,26 @@ def process_incoming_message(post_data):
     # Take action based on command
     # If no command found, send help
     if command in ["","/help"]:
-        send_help(post_data)
+        reply = send_help(post_data)
+    elif command in ["/options"]:
+        reply = send_options(post_data)
+
+    send_message_to_room(get_message(post_data["data"]["id"])["roomId"], reply)
+
 
 def send_help(post_data):
     message = "Thanks for your interest in voting for your favorite SuperHero.  \n"
     message = message + "I understand the following commands:  \n"
     for c in commands.items():
         message = message + "    %s: %s \n" % (c[0], c[1])
+    return message
 
-    send_message_to_room(get_message(post_data["data"]["id"])["roomId"], message)
+def send_options(post_data):
+    options = get_options()
+    message = "The options are... \n"
+    for option in options:
+        message += "  - %s \n" % (option)
+    return message
 
 def debug_msg(post_data, message):
     send_message_to_room(get_message(post_data["data"]["id"])["roomId"], message)
