@@ -41,10 +41,10 @@ app_headers = {}
 app_headers["Content-type"] = "application/json"
 
 commands = {
-    "/vote": "Place a vote",
-    "/options": "Return options",
-    "/results": "Get results",
-    "/help": "Get help"
+    "/vote": "Place a vote for a superhero. Format: `\vote OPTION` ",
+    "/options": "Return the possible options",
+    "/results": "Return current results.",
+    "/help": "Get help."
 }
 
 @app.route('/', methods=["POST"])
@@ -92,14 +92,12 @@ def process_incoming_message(post_data):
 
 def send_results(post_data):
     results = get_results()
-    # ToDo - update results message to provide standings
     message = "The current standings are: \n"
     for i, result in enumerate(results):
         if i == 0:
             message += "* **" +result[0] + "** is in the lead with " + str(round(result[2])) + "% of the votes!\n"
         else:
             message += "* " + result[0] + " has " + str(round(result[2])) + "% of the votes.\n"
-            pass
     return message
 
 def send_help(post_data):
@@ -144,19 +142,11 @@ def process_vote(post_data):
 
 # Utilities to interact with the MyHero-App Server
 # ToDo - Update for v2 results
-def old_get_results():
-    u = app_server + "/results"
-    page = requests.get(u, headers = app_headers)
-    tally = page.json()
-    tally = sorted(tally.items(), key = lambda (k,v): v, reverse=True)
-    return tally
-
 def get_results():
     u = app_server + "/v2/results"
     page = requests.get(u, headers = app_headers)
     tally = page.json()
     return tally
-
 
 def get_options():
     u = app_server + "/options"
