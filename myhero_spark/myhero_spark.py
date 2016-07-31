@@ -91,14 +91,14 @@ def process_incoming_message(post_data):
     send_message_to_room(room_id, reply)
 
 def send_results(post_data):
-    results = v2_get_results()
+    results = get_results()
     # ToDo - update results message to provide standings
     message = "The current standings are: \n"
     for i, result in enumerate(results):
         if i == 0:
-            message += "* **" +result[0] + "** is in the lead with " + str(result[2]) + "% of the votes!\n"
+            message += "* **" +result[0] + "** is in the lead with " + str(round(result[2])) + "% of the votes!\n"
         else:
-            message += "* " + result[0] + " has " + str(result[2]) + "% of the votes.\n"
+            message += "* " + result[0] + " has " + str(round(result[2])) + "% of the votes.\n"
             pass
     return message
 
@@ -144,14 +144,14 @@ def process_vote(post_data):
 
 # Utilities to interact with the MyHero-App Server
 # ToDo - Update for v2 results
-def get_results():
+def old_get_results():
     u = app_server + "/results"
     page = requests.get(u, headers = app_headers)
     tally = page.json()
     tally = sorted(tally.items(), key = lambda (k,v): v, reverse=True)
     return tally
 
-def v2_get_results():
+def get_results():
     u = app_server + "/v2/results"
     page = requests.get(u, headers = app_headers)
     tally = page.json()
