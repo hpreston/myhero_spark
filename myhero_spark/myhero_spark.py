@@ -26,6 +26,7 @@
     export myhero_spark_bot_secret=DemoBotKey
 '''
 
+
 __author__ = 'hapresto'
 
 
@@ -41,7 +42,7 @@ app_headers = {}
 app_headers["Content-type"] = "application/json"
 
 commands = {
-    "/vote": "Place a vote for a superhero. Format: `\vote OPTION` ",
+    "/vote": "Place a vote for a superhero. Format: `/vote OPTION` ",
     "/options": "Return the possible options",
     "/results": "Return current results.",
     "/help": "Get help."
@@ -403,3 +404,4 @@ if __name__ == '__main__':
     sys.stderr.write("Global MyHero Web Hook ID: " + global_webhook_id + "\n")
 
     app.run(debug=True, host='0.0.0.0', port=int("5000"))
+
