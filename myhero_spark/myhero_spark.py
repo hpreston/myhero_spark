@@ -99,7 +99,7 @@ def send_results(post_data):
         if i == 0:
             message += " **" +result[0] + "** is in the lead with " + str(result)[2] + "% of the votes!\n "
         else:
-            message += "  - %s has %s% of the votes.\n" % (result[0], str(result[2]))
+            message += "  - " + result[0] + " has " + str(result)[2] + "% of the votes.\n"
             pass
     return message
 
