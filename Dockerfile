@@ -12,9 +12,11 @@ RUN apk add -U \
 # This is failing for some odd pip upgrade error commenting out for now
 #RUN pip install --upgrade pip
 
-ADD . /app
+COPY requirements.txt /app/
+RUN pip install -r /app/requirements.txt
+
 WORKDIR /app
-RUN pip install --requirement ./requirements.txt
+ADD ./myhero_spark /app/myhero_spark
 
 CMD [ "python", "./myhero_spark/myhero_spark.py" ]
 

@@ -44,6 +44,8 @@ spark_headers["Content-type"] = "application/json"
 app_headers = {}
 app_headers["Content-type"] = "application/json"
 
+demo_room_id = ""
+
 commands = {
     "/vote": "Place a vote",
     "/options": "Return options",
@@ -574,21 +576,23 @@ if __name__ == '__main__':
 
 
     # Setup The MyHereo Spark Demo Room
-    demo_room_id = setup_demo_room()
-    sys.stderr.write("MyHero Demo Room ID: " + demo_room_id + "\n")
+    # demo_room_id = setup_demo_room()
+    # sys.stderr.write("MyHero Demo Room ID: " + demo_room_id + "\n")
 
     # Setup Web Hook to process demo room messages
-    webhook_id = setup_webhook(demo_room_id, bot_url, "MyHero Demo Room Webhook")
-    sys.stderr.write("MyHero Demo Web Hook ID: " + webhook_id + "\n")
+    # webhook_id = setup_webhook(demo_room_id, bot_url, "MyHero Demo Room Webhook")
+    # sys.stderr.write("MyHero Demo Web Hook ID: " + webhook_id + "\n")
+
+
+    # If Demo Email was provided, add to room
+    # demo_email = args.demoemail
+    # if demo_email:
+    #     sys.stderr.write("Adding " + demo_email + " to the demo room.\n")
+    #     add_email_demo_room(demo_email, demo_room_id)
 
     # Create Web Hook to recieve ALL messages
     global_webhook_id = setup_webhook("", bot_url, "Global MyHero Demo Webhook")
     sys.stderr.write("Global MyHero Web Hook ID: " + global_webhook_id + "\n")
 
-    # If Demo Email was provided, add to room
-    demo_email = args.demoemail
-    if demo_email:
-        sys.stderr.write("Adding " + demo_email + " to the demo room.\n")
-        add_email_demo_room(demo_email, demo_room_id)
 
     app.run(debug=True, host='0.0.0.0', port=int("5000"))
