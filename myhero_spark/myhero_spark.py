@@ -42,7 +42,7 @@ app_headers = {}
 app_headers["Content-type"] = "application/json"
 
 commands = {
-    "/vote": "Place a vote for a superhero. Format: \n   \vote OPTION ",
+    "/vote": "Place a vote for a superhero. Format: `/vote OPTION` ",
     "/options": "Return the possible options",
     "/results": "Return current results.",
     "/help": "Get help."
