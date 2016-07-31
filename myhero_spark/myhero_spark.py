@@ -74,7 +74,7 @@ def process_incoming_message(post_data):
         if message["text"].find(c[0]) == 0:
             command = c[0]
             sys.stderr.write("Found command: " + command + "\n")
-            debug_msg(post_data, "Found command: " + command)
+            # debug_msg(post_data, "Found command: " + command)
             break
 
     # Take action based on command
@@ -96,7 +96,7 @@ def send_results(post_data):
     message = "The current standings are\n"
     for i, result in enumerate(results):
         if i == 0:
-            message += " **%s** is in the leade with %s% of the votes!\n " % (result[0], result[2])
+            message += " **%s** is in the lead with %s\% of the votes!\n " % (result[0], result[2])
         else:
             message += "  - %s has %s% of the votes.\n" % (result[0], result[2])
     return message
@@ -174,7 +174,7 @@ def send_message_to_email(email, message):
     spark_u = spark_host + "v1/messages"
     message_body = {
         "toPersonEmail" : email,
-        "text" : message
+        "markdown" : message
     }
     page = requests.post(spark_u, headers = spark_headers, json=message_body)
     message = page.json()
@@ -184,7 +184,7 @@ def send_message_to_room(room_id, message):
     spark_u = spark_host + "v1/messages"
     message_body = {
         "roomId" : room_id,
-        "text" : message
+        "markdown" : message
     }
     page = requests.post(spark_u, headers = spark_headers, json=message_body)
     message = page.json()
