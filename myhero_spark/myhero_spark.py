@@ -235,15 +235,12 @@ def process_incoming_message(post_data):
     if message["personEmail"] == bot_email:
         return ""
 
-    # Check for command
-    #  to be function
-
     command = ""
     for c in commands.items():
         if message["text"].find(c[0]) == 0:
             command = c[0]
-            sys.stderr.write("Found command: " + c[0] + "\n")
-            debug_msg(post_data, "Found command: " + c[0])
+            sys.stderr.write("Found command: " + command + "\n")
+            debug_msg(post_data, "Found command: " + command)
             break
 
     # Take action based on command
@@ -252,9 +249,19 @@ def process_incoming_message(post_data):
         reply = send_help(post_data)
     elif command in ["/options"]:
         reply = send_options(post_data)
+    elif command in ["/vote"]:
+        reply = process_vote(post_data)
+    elif command in ["/results"]:
+        reply = send_results(post_data)
 
-    send_message_to_room(get_message(post_data["data"]["id"])["roomId"], reply)
+    send_message_to_room(room_id, reply)
 
+def send_results(post_data):
+    results = get_results()
+    message = "The current standings are\n"
+    for result in results:
+        message += "  - %s has %s votes.\n" % (result[0], result[1])
+    return message
 
 def send_help(post_data):
     message = "Thanks for your interest in voting for your favorite SuperHero.  \n"
@@ -273,13 +280,16 @@ def send_options(post_data):
 def debug_msg(post_data, message):
     send_message_to_room(get_message(post_data["data"]["id"])["roomId"], message)
 
-def process_vote(message):
+def process_vote(post_data):
     # What to do...
     # 1.  Get Possible Options
     # 2.  See if the message contains one of the options
     # 3.  Cast vote for option
     # 4.  Thank the user for their vote
     # 5.  Delete Webhook
+
+    message_id = post_data["data"]["id"]
+    message = get_message(message_id)
 
     options = get_options()
     chosen_hero = ""
@@ -293,12 +303,14 @@ def process_vote(message):
     if chosen_hero != "":
         vote = place_vote(chosen_hero)
         # delete_webhook(webhook_id)
-        msg = "Thanks for your vote for %s.  Every vote is important.  You can check current results by typing /results." % (chosen_hero)
-        send_message_to_email(message["personEmail"], msg)
+        reply = "Thanks for your vote for %s.  Every vote is important.  You can check current results by typing /results." % (chosen_hero)
+        # msg = "Thanks for your vote for %s.  Every vote is important.  You can check current results by typing /results." % (chosen_hero)
+        # send_message_to_email(message["personEmail"], msg)
     else:
-        msg = "I didn't understand your vote, please type the name of your chosen hero exactly as listed on the ballot.  "
-        send_message_to_email(message["personEmail"], msg)
-    return ""
+        reply = "I didn't understand your vote, please type the name of your chosen hero exactly as listed on the ballot.  "
+        # msg = "I didn't understand your vote, please type the name of your chosen hero exactly as listed on the ballot.  "
+        # send_message_to_email(message["personEmail"], msg)
+    return reply
 
 # Utilities to interact with the MyHero-App Server
 def get_results():
