@@ -92,7 +92,7 @@ def process_incoming_message(post_data):
 
 def send_results(post_data):
     results = v2_get_results()
-    sys.stderr.write(results + "\n")
+    sys.stderr.write(str(results) + "\n")
     # ToDo - update results message to provide standings
     message = "The current standings are\n"
     for i, result in enumerate(results):
