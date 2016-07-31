@@ -3,10 +3,8 @@
     Spark Bot for Simple Superhero Voting Application
 
     This Bot will use a provided Spark Account (identified by the Developer Token)
-    and create a new room to use for interacting with the MyHero Demo.  Users can
-    check current standings, list the available options, and place a vote.  Placing
-    a vote will start a one on one communication with the Bot rather than have votes
-    placed in the big room.
+    and create a webhook to receive all messages sent to the account.   Users can
+    check current standings, list the available options, and place a vote.
 
     This is the an example Service for a basic microservice demo application.
     The application was designed to provide a simple demo for Cisco Mantl
@@ -31,8 +29,6 @@
 __author__ = 'hapresto'
 
 
-# ToDo - Method to monitor incoming 1 on 1 messages
-
 from flask import Flask, request, Response
 import requests, json, re
 
@@ -44,8 +40,6 @@ spark_headers["Content-type"] = "application/json"
 app_headers = {}
 app_headers["Content-type"] = "application/json"
 
-demo_room_id = ""
-
 commands = {
     "/vote": "Place a vote",
     "/options": "Return options",
@@ -55,137 +49,10 @@ commands = {
 
 @app.route('/', methods=["POST"])
 def process_webhook():
-    # Verify that the request is propery authorized
-    # authz = valid_request_check(request)
-    # if not authz[0]:
-    #     return authz[1]
-
     post_data = request.get_json(force=True)
     # pprint(post_data)
-
     process_incoming_message(post_data)
-
     return ""
-
-# @app.route("/demoroom/members", methods=["PUT", "GET"])
-# def process_demoroom_members():
-#     # Verify that the request is propery authorized
-#     authz = valid_request_check(request)
-#     if not authz[0]:
-#         return authz[1]
-#
-#     status = 200
-#     if request.method == "PUT":
-#         data = request.get_json(force=True)
-#         try:
-#             sys.stderr.write("Adding %s to demo room.\n" % (data["email"]))
-#             add_email_demo_room(data["email"], demo_room_id)
-#             status = 201
-#         except KeyError:
-#             error = {"Error":"API Expects dictionary object with single element and key of 'email'"}
-#             status = 400
-#             resp = Response(json.dumps(error), content_type='application/json', status=status)
-#             return resp
-#
-#     demo_room_members = get_membership_for_room(demo_room_id)
-#     resp = Response(
-#         json.dumps(demo_room_members, sort_keys=True, indent = 4, separators = (',', ': ')),
-#         content_type='application/json',
-#         status=status)
-#
-#     return resp
-#
-# @app.route("/demoroom/members/<email>", methods=["GET"])
-# def easy_add_member(email):
-#     '''
-#     Quick and dirty method to add user to Spark Room
-#     '''
-#
-#     if request.method == "GET":
-#         try:
-#             sys.stderr.write("Adding %s to demo room.\n" % (email))
-#             add_email_demo_room(email, demo_room_id)
-#             status = 201
-#         except:
-#             error = {"Error": "There was an error adding the email."}
-#             status = 400
-#             resp = Response(json.dumps(error), content_type='application/json', status=status)
-#             return resp
-#
-#     demo_room_members = get_membership_for_room(demo_room_id)
-#     resp = Response(
-#         json.dumps(demo_room_members, sort_keys=True, indent=4, separators=(',', ': ')),
-#         content_type='application/json',
-#         status=status)
-#     return resp
-
-
-# Bot functions to process the incoming messages posted by Cisco Spark
-
-# def process_demoroom_message(post_data):
-#     message_id = post_data["data"]["id"]
-#     message = get_message(message_id)
-#     # pprint(message)
-#
-#     # First make sure not processing a message from the bot
-#     if message["personEmail"] == bot_email:
-#         return ""
-#
-#
-#     # Check if message contains word "results" and if so send results
-#     if message["text"].lower().find("results") > -1:
-#         results = get_results()
-#         reply = "The current standings are\n"
-#         for result in results:
-#             reply += "  - %s has %s votes.\n" % (result[0], result[1])
-#     # Check if message contains word "options" and if so send options
-#     elif message["text"].lower().find("options") > -1:
-#         options = get_options()
-#         reply = "The options are... \n"
-#         for option in options:
-#             reply += "  - %s \n" % (option)
-#     # Check if message contains word "vote" and if so start a voting session
-#     elif message["text"].lower().find("vote") > -1:
-#         reply = "Let's vote!  Look for a new message from me so you can place a secure vote!"
-#         start_vote_session(message["personEmail"])
-#     # Check if message contains phrase "add email" and if so add user to room
-#     elif message["text"].lower().find("add email") > -1:
-#         # Get the email that comes
-#         emails = re.findall(r'[\w\.-]+@[\w\.-]+', message["text"])
-#         # pprint(emails)
-#         reply = "Adding users to demo room.\n"
-#         for email in emails:
-#             add_email_demo_room(email, demo_room_id)
-#             reply += "  - %s \n" % (email)
-#     # If nothing matches, send instructions
-#     else:
-#         # Reply back to message
-#         reply = "Hello, welcome to the MyHero Demo Room.\n" \
-#                 "To find out current status of voting, ask 'What are the results?'\n" \
-#                 "To find out the possible options, ask 'What are the options?\n" \
-#                 '''To place a vote, say "I'd like to vote" to start a private voting session.'''
-#
-#     send_message_to_room(demo_room_id, reply)
-# # For when a user wants to vote
-# # 1.  Reply in demo room
-# # 2.  Send Message to Sender
-# # 3.  Setup WebHook to room with sender
-# def start_vote_session(email):
-#     options = get_options()
-#     intro = "Thanks for taking time to vote for your favorite onscreen Super Hero. \n" \
-#             "To vote simply type the name of your hero in a message. \n" \
-#             "Options are: "
-#     for option in options:
-#         intro += "  - %s \n" % (option)
-#
-#     message = send_message_to_email(email, intro)
-#     # pprint(message)
-#
-#     # Setup WebHook with person
-#     webhook = setup_webhook(message["roomId"], bot_url, "Webhook for " + email)
-#     return ""
-
-# This typically indicates a message in an active voting session
 
 # Function to take action on incoming message
 def process_incoming_message(post_data):
@@ -225,6 +92,7 @@ def process_incoming_message(post_data):
 
 def send_results(post_data):
     results = get_results()
+    # ToDo - update results message to provide standings
     message = "The current standings are\n"
     for result in results:
         message += "  - %s has %s votes.\n" % (result[0], result[1])
@@ -248,38 +116,30 @@ def debug_msg(post_data, message):
     send_message_to_room(get_message(post_data["data"]["id"])["roomId"], message)
 
 def process_vote(post_data):
-    # What to do...
-    # 1.  Get Possible Options
-    # 2.  See if the message contains one of the options
-    # 3.  Cast vote for option
-    # 4.  Thank the user for their vote
-    # 5.  Delete Webhook
-
     message_id = post_data["data"]["id"]
     message = get_message(message_id)
 
+    # 1.  Get Possible Options
     options = get_options()
     chosen_hero = ""
+    # 2.  See if the message contains one of the options
     for option in options:
         if message["text"].lower().find(option.lower()) > -1:
             sys.stderr.write("Found a vote for: " + option + "\n")
             chosen_hero = option
             break
 
-    # Cast Vote
+    # 3.  Cast vote for option
     if chosen_hero != "":
         vote = place_vote(chosen_hero)
-        # delete_webhook(webhook_id)
+        # 4.  Thank the user for their vote
         reply = "Thanks for your vote for %s.  Every vote is important.  You can check current results by typing /results." % (chosen_hero)
-        # msg = "Thanks for your vote for %s.  Every vote is important.  You can check current results by typing /results." % (chosen_hero)
-        # send_message_to_email(message["personEmail"], msg)
     else:
         reply = "I didn't understand your vote, please type the name of your chosen hero exactly as listed on the ballot.  "
-        # msg = "I didn't understand your vote, please type the name of your chosen hero exactly as listed on the ballot.  "
-        # send_message_to_email(message["personEmail"], msg)
     return reply
 
 # Utilities to interact with the MyHero-App Server
+# ToDo - Update for v2 results
 def get_results():
     u = app_server + "/results"
     page = requests.get(u, headers = app_headers)
@@ -297,43 +157,6 @@ def place_vote(vote):
     u = app_server + "/vote/" + vote
     page = requests.post(u, headers=app_headers)
     return page.json()
-
-# MyHero Demo Room Setup
-# def setup_demo_room():
-#     rooms = current_rooms()
-#     # pprint(rooms)
-#
-#     # Look for a room called "MyHero Demo"
-#     demo_room_id = ""
-#     for room in rooms:
-#         if room["title"] == "MyHero Demo":
-#             # print("Found Room")
-#             demo_room_id = room["id"]
-#             break
-#
-#     # If demo room not found, create it
-#     if demo_room_id == "":
-#         demo_room = create_demo_room()
-#         demo_room_id = demo_room["id"]
-#         # pprint(demo_room)
-#
-#     return demo_room_id
-#
-# def create_demo_room():
-#     spark_u = spark_host + "v1/rooms"
-#     spark_body = {"title":"MyHero Demo"}
-#     page = requests.post(spark_u, headers = spark_headers, json=spark_body)
-#     room = page.json()
-#     return room
-
-# Utility Add a user to the MyHero Demo Room
-# def add_email_demo_room(email, room_id):
-#     spark_u = spark_host + "v1/memberships"
-#     spark_body = {"personEmail": email, "roomId" : room_id}
-#     page = requests.post(spark_u, headers = spark_headers, json=spark_body)
-#     membership = page.json()
-#     return membership
-
 
 # Spark Utility Functions
 #### Message Utilities
@@ -432,7 +255,6 @@ def setup_webhook(room_id, target, name):
         webhook = update_webhook(webhook_id, target, name)
 
     # pprint(webhook)
-
     return webhook_id
 
 #### Room Utilities
@@ -472,8 +294,6 @@ def valid_request_check(request):
         status = 400
         resp = Response(json.dumps(error), content_type='application/json', status=status)
         return (False, resp)
-
-
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
@@ -577,25 +397,8 @@ if __name__ == '__main__':
     spark_headers["Authorization"] = "Bearer " + spark_token
     app_headers["key"] = app_key
 
-
-    # Setup The MyHereo Spark Demo Room
-    # demo_room_id = setup_demo_room()
-    # sys.stderr.write("MyHero Demo Room ID: " + demo_room_id + "\n")
-
-    # Setup Web Hook to process demo room messages
-    # webhook_id = setup_webhook(demo_room_id, bot_url, "MyHero Demo Room Webhook")
-    # sys.stderr.write("MyHero Demo Web Hook ID: " + webhook_id + "\n")
-
-
-    # If Demo Email was provided, add to room
-    # demo_email = args.demoemail
-    # if demo_email:
-    #     sys.stderr.write("Adding " + demo_email + " to the demo room.\n")
-    #     add_email_demo_room(demo_email, demo_room_id)
-
     # Create Web Hook to recieve ALL messages
     global_webhook_id = setup_webhook("", bot_url, "Global MyHero Demo Webhook")
     sys.stderr.write("Global MyHero Web Hook ID: " + global_webhook_id + "\n")
-
 
     app.run(debug=True, host='0.0.0.0', port=int("5000"))
