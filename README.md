@@ -8,6 +8,8 @@ Details on deploying the entire demo to a Mantl cluster can be found at
 
 The application was designed to provide a simple demo for Cisco Mantl.  It is written as a simple Python Flask application and deployed as a docker container.
 
+**NOTE: To leverage the Spark Bot Service, your Mantl Cluster MUST be configured for deployed applications to be accessible from the public Internet.  This is because it relies on the Spark Cloud to be able to send a WebHook to the myhero_spark application you run in Mantl***
+
 Other services are:
 
 * Data - [hpreston/myhero_data](https://github.com/hpreston/myhero_data)
