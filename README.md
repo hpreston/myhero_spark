@@ -34,7 +34,7 @@ The docker containers are available at
   * Optional Service that allows voting through TXT/SMS messaging
 
 # Spark Developer Account Requirement
-In order to use this service, you will need a Cisco Spark Account to use for the bot.  You can leverage your personal Spark Account or create a new one to be used by the service.  I recommend creating a new one to make testing easier (i.e. if you use your own it will be hard to chat with yourself).
+In order to use this service, you will need a Cisco Spark Account to use for the bot.  The bot is built for ease of use, meaning any message to the account used to create the Bot will be acted on and replied to.  This means you'll need to create a new Spark account for the demo.  
 
 Creating an account is free and only requires a working email account (each Spark Account needs a unique email address).  Visit [http://www.ciscospark.com](http://www.ciscospark.com) to signup for an account.
 
