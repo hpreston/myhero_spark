@@ -48,12 +48,32 @@ commands = {
     "/help": "Get help."
 }
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers',
+                         'Content-Type,Authorization,Key')
+    response.headers.add('Access-Control-Allow-Methods',
+                         'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
+
 @app.route('/', methods=["POST"])
 def process_webhook():
     post_data = request.get_json(force=True)
     # pprint(post_data)
     process_incoming_message(post_data)
     return ""
+
+@app.route("/hello/<email>", methods=["GET"])
+def message_email(email):
+    '''
+    Kickoff a 1 on 1 chat with a given email
+    :param email:
+    :return:
+    '''
+    send_message_to_email(email, "Hello, would you like to vote?")
+    return "Message sent to " + email
 
 # Function to take action on incoming message
 def process_incoming_message(post_data):
