@@ -30,7 +30,8 @@ The docker containers are available at
 * Data - [hpreston/myhero_data](https://hub.docker.com/r/hpreston/myhero_data)
 * App - [hpreston/myhero_app](https://hub.docker.com/r/hpreston/myhero_app)
 * Web - [hpreston/myhero_web](https://hub.docker.com/r/hpreston/myhero_web)
-* UI - [hpreston/myhero_ui](https://hub.docker.com/r/hpreston/myhero_ui)* Ernst - [hpreston/myhero_ernst](https://hub.docker.com/r/hpreston/myhero_ernst)
+* UI - [hpreston/myhero_ui](https://hub.docker.com/r/hpreston/myhero_ui)
+* Ernst - [hpreston/myhero_ernst](https://hub.docker.com/r/hpreston/myhero_ernst)
   * Optional Service used along with an MQTT server when App is in "queue" mode
 * Spark Bot - [hpreston/myhero_spark](https://hub.docker.com/r/hpreston/myhero_spark)
   * Optional Service that allows voting through IM/Chat with a Cisco Spark Bot
