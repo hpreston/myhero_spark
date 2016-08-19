@@ -4,6 +4,7 @@ This is the a Spark Bot for a basic microservice demo application.
 This provides an interactive chat service for a voting system where users can vote for their favorite movie superhero.
 
 Details on deploying the entire demo to a Mantl cluster can be found at
+
 * MyHero Demo - [hpreston/myhero_demo](https://github.com/hpreston/myhero_demo)
 
 The application was designed to provide a simple demo for Cisco Mantl.  It is written as a simple Python Flask application and deployed as a docker container.
@@ -15,6 +16,7 @@ Other services are:
 * Data - [hpreston/myhero_data](https://github.com/hpreston/myhero_data)
 * App - [hpreston/myhero_app](https://github.com/hpreston/myhero_app)
 * Web - [hpreston/myhero_web](https://github.com/hpreston/myhero_web)
+* UI - [hpreston/myhero_ui](https://github.com/hpreston/myhero_ui)
 * Ernst - [hpreston/myhero_ernst](https://github.com/hpreston/myhero_ernst)
   * Optional Service used along with an MQTT server when App is in "queue" mode
 * Spark Bot - [hpreston/myhero_spark](https://github.com/hpreston/myhero_spark)
@@ -28,7 +30,7 @@ The docker containers are available at
 * Data - [hpreston/myhero_data](https://hub.docker.com/r/hpreston/myhero_data)
 * App - [hpreston/myhero_app](https://hub.docker.com/r/hpreston/myhero_app)
 * Web - [hpreston/myhero_web](https://hub.docker.com/r/hpreston/myhero_web)
-* Ernst - [hpreston/myhero_ernst](https://hub.docker.com/r/hpreston/myhero_ernst)
+* UI - [hpreston/myhero_ui](https://hub.docker.com/r/hpreston/myhero_ui)* Ernst - [hpreston/myhero_ernst](https://hub.docker.com/r/hpreston/myhero_ernst)
   * Optional Service used along with an MQTT server when App is in "queue" mode
 * Spark Bot - [hpreston/myhero_spark](https://hub.docker.com/r/hpreston/myhero_spark)
   * Optional Service that allows voting through IM/Chat with a Cisco Spark Bot
@@ -36,6 +38,7 @@ The docker containers are available at
   * Optional Service that allows voting through TXT/SMS messaging
 
 # Spark Developer Account Requirement
+
 In order to use this service, you will need a Cisco Spark Account to use for the bot.  The bot is built for ease of use, meaning any message to the account used to create the Bot will be acted on and replied to.  This means you'll need to create a new Spark account for the demo.  
 
 Creating an account is free and only requires a working email account (each Spark Account needs a unique email address).  Visit [http://www.ciscospark.com](http://www.ciscospark.com) to signup for an account.
@@ -133,7 +136,19 @@ The bot is deisgned to look for commands to act on, and provide the basic help m
 
 ## REST APIs
 
+# /
+
 The main service API is at the root of the applciation and is what is used for the Spark Webhooks.
+
+# /hello/:email 
+
+There is an API call that can be leveraged to have the Spark Bot initiate a chat session with a user.  This API responds to GET requests and then will send a Spark message to the email provided.  
+
+Example usage
+
+```
+curl http://myhero-spark.domain.local/hello/user@email.com 
+```
 
 # Local Development with Vagrant
 
