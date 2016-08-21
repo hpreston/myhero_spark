@@ -75,6 +75,10 @@ def message_email(email):
     send_message_to_email(email, "Hello, would you like to vote?")
     return "Message sent to " + email
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return "Service up."
+
 # Function to take action on incoming message
 def process_incoming_message(post_data):
     # pprint(post_data)
