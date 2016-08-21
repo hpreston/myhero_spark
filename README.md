@@ -151,6 +151,28 @@ Example usage
 curl http://myhero-spark.domain.local/hello/user@email.com 
 ```
 
+# /health 
+
+This is an API call that can be used to test if the Spark Bot service is functioning properly.
+  
+```
+curl -v http://myhero-spark.domain.local/health 
+
+*   Trying...
+* Connected to myhero-spark.domain.local (x.x.x.x)
+> GET /health HTTP/1.1
+> Host: myhero-spark.domain.local
+> User-Agent: curl/7.43.0
+> Accept: */*
+> 
+* HTTP 1.0, assume close after body
+< HTTP/1.0 200 OK
+< Connection: close
+< 
+* Closing connection 0
+Service up. 
+```
+
 # Local Development with Vagrant
 
 I've included the configuration files needed to do local development with Vagrant in the repo.  Vagrant will still use Docker for local development and is configured to spin up a CentOS7 host VM for running the container.
